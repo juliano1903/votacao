@@ -1,7 +1,8 @@
 package com.votacao.controllers;
 
-import java.net.URI;
 import java.util.Optional;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,16 +14,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.votacao.Response;
 import com.votacao.dtos.PautaDto;
 import com.votacao.entities.Pauta;
 import com.votacao.services.PautaService;
 
+@SuppressWarnings("rawtypes")
 @RestController
 @RequestMapping("/api/pauta")
-public class PautaController {
+public class PautaController extends BaseController {
 	
 	@Autowired
 	private PautaService pautaService;
@@ -38,27 +39,27 @@ public class PautaController {
 		return ResponseEntity.notFound().build();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@PatchMapping(value="/id/{id}")
 	public ResponseEntity<Response<PautaDto>> iniciarSessao(@PathVariable("id") Long id, @RequestBody PautaDto pautaDTO, BindingResult result) {
 		Response<PautaDto> response = new Response<>();
 		pautaDTO.setId(id);
 		pautaService.abrirSessao(convertDtoParaPauta(pautaDTO), result);
 		if(result.hasErrors()) {
-			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-			return ResponseEntity.badRequest().body(response);
+			return geraBadRequestResponse(response, result);
 		}
 		return ResponseEntity.noContent().build();
 	}
 	
 	@PostMapping()
-	public ResponseEntity<Response<PautaDto>> criarPauta(@RequestBody PautaDto pautaDTO, BindingResult result) {
+	public ResponseEntity<Response<PautaDto>> criarPauta(@Valid @RequestBody PautaDto pautaDTO, BindingResult result) {
+		Response<PautaDto> response = new Response<>();
+		if(result.hasErrors()) {
+			return geraBadRequestResponse(response, result);
+		}
+
 		Pauta pauta = pautaService.criarPauta(convertDtoParaPauta(pautaDTO));
 		return ResponseEntity.created(getUri(pauta.getIdPauta())).build();
-	}
-	
-	private URI getUri(Long id) {
-		return ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(id).toUri();
 	}
  	
 	private Pauta convertDtoParaPauta(PautaDto pautaDTO) {
@@ -72,8 +73,8 @@ public class PautaController {
 	
 	private PautaDto convertPautaParaDto(Pauta pauta) {
 		PautaDto pautaDto = new PautaDto();
+		pautaDto.setId(pauta.getIdPauta());
 		pautaDto.setAssunto(pauta.getAssunto());
-		pautaDto.setDuracaoSessao(pauta.getDuracaoSessao());
 		pautaDto.setDataTerminoSessao(pauta.getDataTerminoSessao());
 		return pautaDto;
 	}

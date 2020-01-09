@@ -2,6 +2,8 @@ package com.votacao.controllers;
 
 import java.net.URI;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -9,32 +11,38 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.votacao.Response;
 import com.votacao.dtos.VotoDto;
 import com.votacao.entities.Pauta;
 import com.votacao.entities.Usuario;
 import com.votacao.entities.Voto;
+import com.votacao.exceptions.BusinessException;
 import com.votacao.services.VotoService;
 
 @RestController
 @RequestMapping(value="api/voto")
-public class VotoController {
+public class VotoController extends BaseController {
 
 	@Autowired
 	private VotoService votoService;
 	
 	@PostMapping()
-	public ResponseEntity<Response<VotoDto>> votar(@RequestBody VotoDto votoDTO, BindingResult result) {
+	public ResponseEntity<Response<VotoDto>> votar(@Valid @RequestBody VotoDto votoDTO, BindingResult result) {
 		Response<VotoDto> response = new Response<>();
-		Voto voto = votoService.votar(convertDtoParaVoto(votoDTO), result);
+		
 		if(result.hasErrors()) {
-			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-			return ResponseEntity.badRequest().body(response);
+			return geraBadRequestResponse(response, result);
 		}
-		response.setData(converterVotoParaVotoDto(voto));
-		return ResponseEntity.created(getUri(voto.getIdVoto())).build();
+		
+		try {
+			Voto voto = votoService.votar(convertDtoParaVoto(votoDTO));
+			response.setData(converterVotoParaVotoDto(voto));
+			return ResponseEntity.created(getUri(voto.getIdVoto())).build();
+		} catch (BusinessException e) {
+			response.getErrors().add(e.getMessage());
+			return geraBadRequestResponse(response, result);
+		}
 	}
 
 	private VotoDto converterVotoParaVotoDto(Voto voto) {
@@ -55,10 +63,5 @@ public class VotoController {
 		usuario.setIdUsuario(votoDTO.getIdUsuario());
 		voto.setUsuario(usuario);
 		return voto;
-	}
-	
-	private URI getUri(Long id) {
-		return ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(id).toUri();
 	}
 }

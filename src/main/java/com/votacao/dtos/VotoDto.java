@@ -1,5 +1,8 @@
 package com.votacao.dtos;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 public class VotoDto {
 
 	private Long id;
@@ -18,6 +21,7 @@ public class VotoDto {
 		this.id = id;
 	}
 
+	@NotEmpty(message = "Códido do usuário deve ser informado")
 	public String getOpcao() {
 		return opcao;
 	}
@@ -26,6 +30,7 @@ public class VotoDto {
 		this.opcao = opcao;
 	}
 
+	@NotNull(message = "Códido do usuário deve ser informado")
 	public Long getIdUsuario() {
 		return idUsuario;
 	}
@@ -34,6 +39,7 @@ public class VotoDto {
 		this.idUsuario = idUsuario;
 	}
 
+	@NotNull(message = "Códido da pauta deve ser informado")
 	public Long getIdPauta() {
 		return idPauta;
 	}
