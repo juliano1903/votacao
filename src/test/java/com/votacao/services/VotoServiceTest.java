@@ -8,6 +8,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.votacao.entities.Voto;
+import com.votacao.exceptions.BusinessException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -17,7 +18,7 @@ public class VotoServiceTest {
 	@Autowired
 	private VotoService votoService;
 	
-	@Test
+	@Test(expected = BusinessException.class)
 	public void deve_lancar_excecao_quando_opcao_voto_for_diferente_de_sim_e_nao() {
 		Voto voto = new Voto();
 		voto.setOpcao("S");

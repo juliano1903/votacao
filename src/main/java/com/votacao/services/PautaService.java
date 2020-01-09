@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 
 import com.votacao.entities.Pauta;
+import com.votacao.exceptions.BusinessException;
 import com.votacao.repositories.PautaRepository;
 
 @Service
@@ -21,22 +22,20 @@ public class PautaService {
 		return pautaRepository.save(pauta);
 	}
 	
-	public Pauta abrirSessao(Pauta pauta, BindingResult result) {
+	public Pauta abrirSessao(Pauta pauta) {
 		
 		Optional<Pauta> pautaExistente = pautaRepository.findById(pauta.getIdPauta());
 		
 		if(pautaExistente.isPresent()) {
 			if(pautaExistente.get().getDataTerminoSessao() != null) {
 				if (pautaExistente.get().getDataTerminoSessao().isBefore(LocalDateTime.now())) {
-					result.addError(new ObjectError("pauta", "Não é possível abrir esta sessão. Sessao já encerrada!"));
+					throw new BusinessException("Não é possível abrir esta sessão. Sessao já encerrada");
 				} else {
-					result.addError(new ObjectError("pauta", "Não é possível abrir esta sessão. Sessao já aberta!"));
+					throw new BusinessException("Não é possível abrir esta sessão. Sessao já aberta");
 				}
-				return null;
 			}
 		} else {
-			result.addError(new ObjectError("pauta", "Não é possível abrir esta sessão. Pauta inexistente!"));
-			return null;
+			throw new BusinessException("Não é possível abrir esta sessão. Pauta inexistente");
 		}
 		
 		if(pauta.getDuracaoSessao() == null) {

@@ -43,12 +43,18 @@ public class PautaController extends BaseController {
 	@PatchMapping(value="/id/{id}")
 	public ResponseEntity<Response<PautaDto>> iniciarSessao(@PathVariable("id") Long id, @RequestBody PautaDto pautaDTO, BindingResult result) {
 		Response<PautaDto> response = new Response<>();
-		pautaDTO.setId(id);
-		pautaService.abrirSessao(convertDtoParaPauta(pautaDTO), result);
 		if(result.hasErrors()) {
 			return geraBadRequestResponse(response, result);
 		}
-		return ResponseEntity.noContent().build();
+
+		try {
+			pautaDTO.setId(id);
+			pautaService.abrirSessao(convertDtoParaPauta(pautaDTO));
+			return ResponseEntity.noContent().build();			
+		} catch (Exception e) {
+			response.getErrors().add(e.getMessage());
+			return geraBadRequestResponse(response, result);
+		}
 	}
 	
 	@PostMapping()
@@ -57,7 +63,6 @@ public class PautaController extends BaseController {
 		if(result.hasErrors()) {
 			return geraBadRequestResponse(response, result);
 		}
-
 		Pauta pauta = pautaService.criarPauta(convertDtoParaPauta(pautaDTO));
 		return ResponseEntity.created(getUri(pauta.getIdPauta())).build();
 	}
