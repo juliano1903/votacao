@@ -27,7 +27,7 @@ import com.votacao.services.VotoService;
 
 @SuppressWarnings("rawtypes")
 @RestController
-@RequestMapping("/api/v1/pautas")
+@RequestMapping("/api/v1/pauta")
 public class PautaController extends BaseController {
 	
 	@Autowired
@@ -72,7 +72,7 @@ public class PautaController extends BaseController {
 		return ResponseEntity.created(getUri(pauta.getIdPauta())).build();
 	}
 	
-	@PostMapping("/{id}/votos")
+	@PostMapping("/{id}/votar")
 	public ResponseEntity<Response<VotoDto>> votar(@PathVariable("id") Long idPauta, @Valid @RequestBody VotoDto votoDTO, BindingResult result) {
 		Response<VotoDto> response = new Response<>();
 		

@@ -21,7 +21,7 @@
 		}
 	],
 	"paths": {
-		"/api/v1/pautas": {
+		"/api/v1/pauta": {
 			"post": {
 				"tags": [
 					"Pauta"
@@ -56,7 +56,7 @@
 				"deprecated": false
 			}
 		},
-		"/api/v1/pautas/{id}": {
+		"/api/v1/pauta/{id}": {
 			"get": {
 				"tags": [
 					"Pauta"
@@ -131,7 +131,7 @@
 				"deprecated": false
 			}
 		},
-		"/api/v1/pautas/{id}/votos": {
+		"/api/v1/pauta/{id}/votar": {
 			"post": {
 				"tags": [
 					"Pauta"
