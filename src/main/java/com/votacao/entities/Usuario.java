@@ -17,6 +17,9 @@ public class Usuario {
 	
 	@Column
 	public String nome;
+	
+	@Column
+	public String cpf;
 
 	public Long getIdUsuario() {
 		return idUsuario;
@@ -32,5 +35,13 @@ public class Usuario {
 
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+
+	public String getCpf() {
+		return cpf;
+	}
+
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
 	}
 }
