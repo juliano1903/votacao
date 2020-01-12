@@ -21,7 +21,7 @@ public class VotoDto {
 		this.id = id;
 	}
 
-	@NotEmpty(message = "Códido do usuário deve ser informado")
+	@NotEmpty(message = "Opção de voto deve ser informada")
 	public String getOpcao() {
 		return opcao;
 	}

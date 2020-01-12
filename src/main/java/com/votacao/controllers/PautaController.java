@@ -17,18 +17,26 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.votacao.Response;
 import com.votacao.dtos.PautaDto;
+import com.votacao.dtos.VotoDto;
 import com.votacao.entities.Pauta;
+import com.votacao.entities.Usuario;
+import com.votacao.entities.Voto;
+import com.votacao.exceptions.BusinessException;
 import com.votacao.services.PautaService;
+import com.votacao.services.VotoService;
 
 @SuppressWarnings("rawtypes")
 @RestController
-@RequestMapping("/api/pauta")
+@RequestMapping("/api/v1/pautas")
 public class PautaController extends BaseController {
 	
 	@Autowired
 	private PautaService pautaService;
+	
+	@Autowired
+	private VotoService votoService;
 
-	@GetMapping(value="/id/{id}")
+	@GetMapping(value="/{id}")
 	public ResponseEntity<Response<PautaDto>> buscarPorId(@PathVariable("id") Long idPauta) {
 		Response<PautaDto> response = new Response<>();
 		Optional<Pauta> pauta = pautaService.buscarPorId(idPauta);
@@ -40,12 +48,9 @@ public class PautaController extends BaseController {
 	}
 	
 	@SuppressWarnings("unchecked")
-	@PatchMapping(value="/id/{id}")
+	@PatchMapping(value="/{id}")
 	public ResponseEntity<Response<PautaDto>> iniciarSessao(@PathVariable("id") Long id, @RequestBody PautaDto pautaDTO, BindingResult result) {
 		Response<PautaDto> response = new Response<>();
-		if(result.hasErrors()) {
-			return geraBadRequestResponse(response, result);
-		}
 
 		try {
 			pautaDTO.setId(id);
@@ -65,6 +70,45 @@ public class PautaController extends BaseController {
 		}
 		Pauta pauta = pautaService.criarPauta(convertDtoParaPauta(pautaDTO));
 		return ResponseEntity.created(getUri(pauta.getIdPauta())).build();
+	}
+	
+	@PostMapping("/{id}/votos")
+	public ResponseEntity<Response<VotoDto>> votar(@PathVariable("id") Long idPauta, @Valid @RequestBody VotoDto votoDTO, BindingResult result) {
+		Response<VotoDto> response = new Response<>();
+		
+		if(result.hasErrors()) {
+			return geraBadRequestResponse(response, result);
+		}
+		
+		try {
+			votoDTO.setIdPauta(idPauta);
+			Voto voto = votoService.votar(convertDtoParaVoto(votoDTO));
+			response.setData(converterVotoParaVotoDto(voto));
+			return ResponseEntity.created(getUri(voto.getIdVoto())).build();
+		} catch (BusinessException e) {
+			response.getErrors().add(e.getMessage());
+			return geraBadRequestResponse(response, result);
+		}
+	}
+
+	private VotoDto converterVotoParaVotoDto(Voto voto) {
+		VotoDto votoDto = new VotoDto();
+		votoDto.setIdPauta(voto.getPauta().getIdPauta());
+		votoDto.setOpcao(voto.getOpcao());
+		votoDto.setIdUsuario(voto.getUsuario().getIdUsuario());
+		return votoDto;
+	}
+
+	private Voto convertDtoParaVoto(VotoDto votoDTO) {
+		Voto voto = new Voto();
+		voto.setOpcao(votoDTO.getOpcao());
+		Pauta pauta = new Pauta();
+		pauta.setIdPauta(votoDTO.getIdPauta());
+		voto.setPauta(pauta);
+		Usuario usuario = new Usuario();
+		usuario.setIdUsuario(votoDTO.getIdUsuario());
+		voto.setUsuario(usuario);
+		return voto;
 	}
  	
 	private Pauta convertDtoParaPauta(PautaDto pautaDTO) {

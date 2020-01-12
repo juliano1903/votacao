@@ -23,6 +23,8 @@ public class PautaDto {
 	
 	private String resultado;
 	
+	private boolean isSessaoEncerrada;
+	
 	public Long getId() {
 		return id;
 	}
@@ -62,5 +64,13 @@ public class PautaDto {
 
 	public void setResultado(String resultado) {
 		this.resultado = resultado;
+	}
+
+	public boolean isSessaoEncerrada() {
+		return isSessaoEncerrada;
+	}
+
+	public void setSessaoEncerrada(boolean isSessaoEncerrada) {
+		this.isSessaoEncerrada = isSessaoEncerrada;
 	}
 }

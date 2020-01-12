@@ -26,10 +26,10 @@ public class Pauta {
 	private String assunto;
 	
 	@Column
-	private LocalDateTime dataInicioSessao;
+	private LocalDateTime dataTerminoSessao;
 	
 	@Column
-	private LocalDateTime dataTerminoSessao;
+	private boolean isSessaoEncerrada;
 	
 	@Transient
 	private Long duracaoSessao;
@@ -54,10 +54,6 @@ public class Pauta {
 		this.assunto = assunto;
 	}
 
-	public void setDataInicioSessao(LocalDateTime dataInicioSessao) {
-		this.dataInicioSessao = dataInicioSessao;
-	}
-
 	public void setDataTerminoSessao(LocalDateTime dataTerminoSessao) {
 		this.dataTerminoSessao = dataTerminoSessao;
 	}
@@ -74,10 +70,6 @@ public class Pauta {
 		this.duracaoSessao = duracaoSessao;
 	}	
 
-	public LocalDateTime getDataInicioSessao() {
-		return dataInicioSessao;
-	}
-
 	public LocalDateTime getDataTerminoSessao() {
 		return dataTerminoSessao;
 	}
@@ -85,6 +77,12 @@ public class Pauta {
 	public List<Voto> getVotos() {
 		return votos;
 	}
-	
-	
+
+	public boolean isSessaoEncerrada() {
+		return isSessaoEncerrada;
+	}
+
+	public void setSessaoEncerrada(boolean isSessaoEncerrada) {
+		this.isSessaoEncerrada = isSessaoEncerrada;
+	}
 }
