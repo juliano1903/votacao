@@ -38,10 +38,10 @@
 					{
 						"in": "body",
 						"name": "Pauta",
-						"description": "Pauta",
+						"description": "Parametros para criar uma Pauta",
 						"required": true,
 						"schema": {
-							"$ref": "#/definitions/Pauta"
+							"$ref": "#/definitions/CriarPauta"
 						}
 					}
 				],
@@ -84,7 +84,7 @@
 						}
 					},
 					"404": {
-						"description": "Pauta não encontrado"
+						"description": "Pauta não encontrada"
 					}
 				},
 				"deprecated": false
@@ -111,12 +111,14 @@
 						"format": "int64"
 					},
 					{
+						"name": "duracaoSessao",
 						"in": "body",
-						"name": "Pauta",
-						"description": "Pauta",
-						"required": true,
+						"description": "Duração da sessão a ser iniciada em minutos, caso não seja informado será considerado o valor 1 minuto",
+						"required": false,
+						"type": "integer",
+						"format": "int64",
 						"schema": {
-							"$ref": "#/definitions/Pauta"
+							"$ref": "#/definitions/IniciarSessao"
 						}
 					}
 				],
@@ -176,6 +178,16 @@
 		}
 	},
 	"definitions": {
+		"IniciarSessao": {
+			"type": "object",
+			"properties": {
+				"duracaoSessao": {
+					"type": "integer",
+					"format": "int64"
+				}
+			},
+			"title": "IniciarSessao"
+		},
 		"Pauta": {
 			"type": "object",
 			"properties": {
@@ -202,6 +214,15 @@
 				}
 			},
 			"title": "Pauta"
+		},
+		"CriarPauta": {
+			"type": "object",
+			"properties": {
+				"assunto": {
+					"type": "string"
+				}
+			},
+			"title": "CriarPauta"
 		},
 		"Response«Pauta»": {
 			"type": "object",
@@ -236,10 +257,6 @@
 		"Voto": {
 			"type": "object",
 			"properties": {
-				"id": {
-					"type": "integer",
-					"format": "int64"
-				},
 				"idPauta": {
 					"type": "integer",
 					"format": "int64"
