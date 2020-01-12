@@ -19,7 +19,7 @@ public class SwaggerSpecConfig {
     public SwaggerResourcesProvider swaggerResourcesProvider(InMemorySwaggerResourcesProvider defaultResourcesProvider) {
         return () -> {
             SwaggerResource wsResource = new SwaggerResource();
-            wsResource.setName("new spec");
+            wsResource.setName("Votação");
             wsResource.setSwaggerVersion("2.0");
             wsResource.setLocation("/swagger.json");
 
