@@ -31,6 +31,9 @@ public class Pauta {
 	@Column
 	private boolean isSessaoEncerrada;
 	
+	@Column
+	private String resultado; 
+	
 	@Transient
 	private Long duracaoSessao;
 	
@@ -83,5 +86,13 @@ public class Pauta {
 
 	public void setSessaoEncerrada(boolean isSessaoEncerrada) {
 		this.isSessaoEncerrada = isSessaoEncerrada;
+	}
+
+	public String getResultado() {
+		return resultado;
+	}
+
+	public void setResultado(String resultado) {
+		this.resultado = resultado;
 	}
 }

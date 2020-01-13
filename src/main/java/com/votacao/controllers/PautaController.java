@@ -143,6 +143,8 @@ public class PautaController extends BaseController {
 		pautaDto.setId(pauta.getIdPauta());
 		pautaDto.setAssunto(pauta.getAssunto());
 		pautaDto.setDataTerminoSessao(pauta.getDataTerminoSessao());
+		pautaDto.setResultado(pauta.getResultado());
+		pautaDto.setSessaoEncerrada(pauta.isSessaoEncerrada());
 		return pautaDto;
 	}
 }
