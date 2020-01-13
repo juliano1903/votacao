@@ -37,11 +37,11 @@ import com.votacao.services.VotoService;
 @AutoConfigureMockMvc
 public class PautaControllerTest {
 	
-	 private static final String BASE_URI_PAUTAS = "/api/v1/pautas";
+	 private static final String BASE_URI_PAUTAS = "/api/v1/pauta";
 
-	 private static final String URI_PAUTAS_1 = "/api/v1/pautas/1";
+	 private static final String URI_PAUTAS_1 = "/api/v1/pauta/1";
 	 
-	 private static final String URI_VOTOS = "/api/v1/pautas/1/votos";
+	 private static final String URI_VOTOS = "/api/v1/pauta/1/votar";
 	
 	@Autowired
 	private MockMvc mockMvc;

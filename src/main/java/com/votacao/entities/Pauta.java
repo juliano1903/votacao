@@ -34,8 +34,7 @@ public class Pauta {
 	@Transient
 	private Long duracaoSessao;
 	
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name="voto")
+	@OneToMany(mappedBy="pauta")
 	private List<Voto> votos;
 
 	public Long getIdPauta() {

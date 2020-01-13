@@ -6,13 +6,9 @@ import static com.votacao.OpcaoVotoEnum.SIM;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import org.hibernate.property.access.spi.BuiltInPropertyAccessStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 
-import com.votacao.OpcaoVotoEnum;
 import com.votacao.entities.Pauta;
 import com.votacao.entities.Voto;
 import com.votacao.exceptions.BusinessException;
@@ -28,12 +24,19 @@ public class VotoService {
 	@Autowired
 	private PautaRepository pautaRepository;
 	
+	@Autowired
+	private UsuarioService usuarioService;
+	
 	public Voto votar(Voto voto) {
 		if (!SIM.name().equals(voto.getOpcao()) && !NAO.name().equals(voto.getOpcao())) {
 			throw new BusinessException("Valores permitidos para o voto são SIM ou NAO");
 		}
 		
 		Optional<Pauta> pautaExistente = pautaRepository.findById(voto.getPauta().getIdPauta());
+		
+		if(!usuarioService.existeUsuario(voto.getUsuario().getIdUsuario())) {
+			throw new BusinessException("Não foi possível contabilizar o voto. Usuário inexistente");
+		}
 		
 		if(pautaExistente.isPresent()) {
 			if(pautaExistente.get().getDataTerminoSessao() != null) {

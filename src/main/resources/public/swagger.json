@@ -54,6 +54,30 @@
 					}
 				},
 				"deprecated": false
+			},
+			"get": {
+				"tags": [
+					"Pauta"
+				],
+				"summary": "Busca todas as pautas",
+				"operationId": "buscarTodasAsPautasUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/Response«List«Pauta»»"
+						}
+					},
+					"404": {
+						"description": "Pauta não encontrada"
+					}
+				}
 			}
 		},
 		"/api/v1/pauta/{id}": {
@@ -187,6 +211,24 @@
 				}
 			},
 			"title": "IniciarSessao"
+		},
+		"Response«List«Pauta»»": {
+			"type": "object",
+			"properties": {
+				"data": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/Pauta"
+					}
+				},
+				"errors": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				}
+			},
+			"title": "Response«List«Pauta»»"
 		},
 		"Pauta": {
 			"type": "object",

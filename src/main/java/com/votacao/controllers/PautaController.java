@@ -1,5 +1,7 @@
 package com.votacao.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -42,6 +44,22 @@ public class PautaController extends BaseController {
 		Optional<Pauta> pauta = pautaService.buscarPorId(idPauta);
 		if (pauta.isPresent()) {
 			response.setData(convertPautaParaDto(pauta.get()));
+			return ResponseEntity.ok().body(response);
+		}
+		return ResponseEntity.notFound().build();
+	}
+	
+	@GetMapping()
+	public ResponseEntity<Response<List<PautaDto>>> buscarTodasPautas() {
+		Response<List<PautaDto>> response = new Response<>();
+		List<Pauta> pautas = pautaService.findAll();
+		if (!pautas.isEmpty()) {
+			List<PautaDto> pautasDto = new ArrayList<>();
+			for (Pauta pauta: pautas) {
+				pautasDto.add(convertPautaParaDto(pauta));
+			}
+			
+			response.setData(pautasDto);				
 			return ResponseEntity.ok().body(response);
 		}
 		return ResponseEntity.notFound().build();

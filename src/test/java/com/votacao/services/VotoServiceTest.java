@@ -29,6 +29,7 @@ import com.votacao.entities.Usuario;
 import com.votacao.entities.Voto;
 import com.votacao.exceptions.BusinessException;
 import com.votacao.repositories.PautaRepository;
+import com.votacao.repositories.UsuarioRepository;
 import com.votacao.repositories.VotoRepository;
 
 @RunWith(SpringRunner.class)
@@ -44,6 +45,9 @@ public class VotoServiceTest {
 	
 	@MockBean
 	private VotoRepository votoRepository;
+	
+	@MockBean
+	private UsuarioService usuarioService;
 	
 	@Rule
 	public ExpectedException expectedEx = ExpectedException.none();
@@ -63,11 +67,19 @@ public class VotoServiceTest {
 	    expectedEx.expect(BusinessException.class);
 	    expectedEx.expectMessage("Não é possível votar nesta pauta. Pauta inexistente");
 		
-	    Voto voto = new Voto();
-		voto.setOpcao("SIM");
 		Pauta pauta = new Pauta();
 		pauta.setIdPauta(1l);
+		
+		Usuario usuario = new Usuario();
+		usuario.setIdUsuario(1l);
+		
+		Voto voto = new Voto();
+		voto.setOpcao("SIM");
+		
 		voto.setPauta(pauta);
+		voto.setUsuario(usuario);
+		given(this.usuarioService.existeUsuario(any(Long.class))).willReturn((true));
+		
 		votoService.votar(voto);
 	}
 	
@@ -79,12 +91,17 @@ public class VotoServiceTest {
 		Pauta pauta = new Pauta();
 		pauta.setDataTerminoSessao(now().minusMonths(1));
 		pauta.setIdPauta(1l);
+		
+		Usuario usuario = new Usuario();
+		usuario.setIdUsuario(1l);
+
 		Voto voto = new Voto();
 		voto.setOpcao("SIM");
 		pauta.setIdPauta(1l);
 		voto.setPauta(pauta);
-		
+		voto.setUsuario(usuario);
 	    
+		given(this.usuarioService.existeUsuario(any(Long.class))).willReturn((true));
 	    given(this.pautaRepository.findById(any(Long.class))).willReturn((of(pauta)));
 	    
 		votoService.votar(voto);
@@ -97,11 +114,40 @@ public class VotoServiceTest {
 
 		Pauta pauta = new Pauta();
 		pauta.setIdPauta(1l);
+		
+		Usuario usuario = new Usuario();
+		usuario.setIdUsuario(1l);
+		
 		Voto voto = new Voto();
 		voto.setOpcao("NAO");
-		pauta.setIdPauta(1l);
 		voto.setPauta(pauta);
+		voto.setUsuario(usuario);
 	    
+		given(this.usuarioService.existeUsuario(any(Long.class))).willReturn((true));
+	    given(this.pautaRepository.findById(any(Long.class))).willReturn((of(pauta)));
+	    given(this.pautaRepository.findById(any(Long.class))).willReturn((of(pauta)));
+
+	    
+		votoService.votar(voto);
+	}
+	
+	@Test
+	public void deve_lancar_excecao_quando_a_usuario_nao_existir() {
+		expectedEx.expect(BusinessException.class);
+		expectedEx.expectMessage("Não foi possível contabilizar o voto. Usuário inexistente");
+
+		Pauta pauta = new Pauta();
+		pauta.setIdPauta(1l);
+		
+		Usuario usuario = new Usuario();
+		usuario.setIdUsuario(1l);
+		
+		Voto voto = new Voto();
+		voto.setOpcao("NAO");
+		voto.setPauta(pauta);
+		voto.setUsuario(usuario);
+	    
+		given(this.usuarioService.existeUsuario(any(Long.class))).willReturn((false));
 	    given(this.pautaRepository.findById(any(Long.class))).willReturn((of(pauta)));
 	    given(this.pautaRepository.findById(any(Long.class))).willReturn((of(pauta)));
 
@@ -119,12 +165,13 @@ public class VotoServiceTest {
 		pauta.setIdPauta(1l);
 		Usuario usuario = new Usuario();
 		usuario.setIdUsuario(1l);
+
 		Voto voto = new Voto();
 		voto.setOpcao("NAO");
-		pauta.setIdPauta(1l);
 		voto.setPauta(pauta);
 		voto.setUsuario(usuario);
 	    
+		given(this.usuarioService.existeUsuario(any(Long.class))).willReturn((true));
 	    given(this.pautaRepository.findById(any(Long.class))).willReturn((of(pauta)));
 	    given(this.votoRepository.findByIdUsuarioAndIdPauta(any(Long.class), any(Long.class))).willReturn((of(voto)));
 	    
@@ -144,6 +191,7 @@ public class VotoServiceTest {
 		voto.setPauta(pauta);
 		voto.setUsuario(usuario);
 	    
+		given(this.usuarioService.existeUsuario(any(Long.class))).willReturn((true));
 	    given(this.pautaRepository.findById(any(Long.class))).willReturn((of(pauta)));
 	    given(this.votoRepository.findByIdUsuarioAndIdPauta(any(Long.class), any(Long.class))).willReturn((empty()));
 

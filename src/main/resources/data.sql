@@ -1,1 +1,1 @@
-insert into usuario values (1, 'usuario teste 1');
+insert into usuario values (1, '22698957034', 'teste 1 CPF valido');

@@ -1,12 +1,11 @@
 package com.votacao.services;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 
 import com.votacao.entities.Pauta;
 import com.votacao.exceptions.BusinessException;
@@ -48,5 +47,9 @@ public class PautaService {
 	
 	public Optional<Pauta> buscarPorId(Long idPauta) {
 		return pautaRepository.findById(idPauta);
+	}
+
+	public List<Pauta> findAll() {
+		return pautaRepository.findAll();
 	}
 }
